@@ -435,11 +435,11 @@
   },
   "https://doi.org/10.1029/2022GL101917": {
     "usages": [
-      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_1.ipynb",
-      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_2.ipynb",
-      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_3.ipynb",
-      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_4.ipynb",
-      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/figure_ripening_rate.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/fig_1.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/fig_2.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/fig_3.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/fig_4.ipynb",
+      "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/fig_ripening_rate.ipynb",
       "examples/PySDM_examples/featured/Grabowski_and_Pawlowska_2023/__init__.py",
       "tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_1_and_2.py",
       "tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_3.py",
@@ -980,7 +980,7 @@
     "label": "Matsushima et al. 2023 (Geosci. Model Dev. 16)",
     "usages": [
       "PySDM/initialisation/sampling/spectral_sampling.py",
-      "examples/PySDM_examples/misc/Matsushima_et_al_2023/figure_1.ipynb",
+      "examples/PySDM_examples/misc/Matsushima_et_al_2023/fig_1.ipynb",
       "examples/PySDM_examples/misc/Matsushima_et_al_2023/__init__.py"
     ]
   },
@@ -1040,7 +1040,7 @@
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/long1974.py",
       "examples/PySDM_examples/featured/Long_1974/__init__.py",
-      "examples/PySDM_examples/featured/Long_1974/fig10_11_13_14.ipynb"
+      "examples/PySDM_examples/featured/Long_1974/figs_10_11_13_14.ipynb"
     ],
     "label": "Long 1974 (J. Atmos. Sci. 31)",
     "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
