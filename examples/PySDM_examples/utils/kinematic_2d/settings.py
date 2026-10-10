@@ -4,7 +4,7 @@ from typing import Iterable
 from PySDM import Formulae
 from PySDM.physics import si
 
-from .strato_cumulus import StratoCumulus
+from PySDM_examples.utils.kinematic_2d.strato_cumulus import StratoCumulus
 
 
 class Settings(StratoCumulus):
