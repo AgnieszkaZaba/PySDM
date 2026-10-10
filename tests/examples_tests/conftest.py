@@ -92,6 +92,7 @@ def findfiles(path, regex):
 
 TEST_SUITES = {
     "isotopes_chemistry_extraterrestrial": [
+        "isotopes",
         "Bolot_et_al_2013",
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
@@ -124,8 +125,9 @@ TEST_SUITES = {
     "condensation_b": [
         "Abdul_Razzak_Ghan_2000",
         "Arabas_and_Shima_2017",
-        "Pyrcel",
+        "pyrcel_docs_testcase",
         "Yang_et_al_2018",
+        "condensation_adaptivity",
     ],
     "condensation_c": [
         "Grabowski_and_Pawlowska_2023",
@@ -145,16 +147,11 @@ TEST_SUITES = {
         "Niedermeier_et_al_2014",
         "Spichtinger_et_al_2023",
     ],
-    "multi-process_a": [
-        "Arabas_et_al_2015",
-        "_HOWTOs",
-        "Strzabala_2025_BEng",
-    ],
+    "multi-process_a": ["Steinke_et_al_2011", "tutorials", "copulae"],
     "multi-process_b": [
         "Arabas_et_al_2025",
     ],
     "multi-process_c_breakup": [
-        "Bartman_2020_MasterThesis",
         "Bieli_et_al_2022",
         "deJong_Mackay_et_al_2023",
         "Srivastava_1982",
@@ -169,7 +166,6 @@ TEST_SUITES = {
         "Shipway_and_Hill_2012",
         "seeding",
         "utils",
-        "Zaba_et_al",
         "Gonfiantini_1986",
     ],
 }
