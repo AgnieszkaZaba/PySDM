@@ -8,9 +8,7 @@ import numpy as np
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM_examples import Gedzelman_and_Arnold_1994
-
-from PySDM.physics.constants import PER_CENT
+from PySDM_examples.misc import Gedzelman_and_Arnold_1994
 
 PLOT = False
 
@@ -26,12 +24,11 @@ def notebook_variables_fixture():
 @pytest.mark.parametrize(
     "x, expected_y, phase",
     (
-        (0.99, 0.27, "liquid"),
-        (0.898, 0.62, "liquid"),
-        (0.875, 0.95, "liquid"),
-        (0.8875, 0, "vapour"),
-        (0.88, 0.32, "vapour"),
-        (0.85, 1, "vapour"),
+        (1.0, 0.30, "liquid"),
+        (0.93, 0.5, "liquid"),
+        (0.8776, 1.0, "liquid"),
+        (0.9, 0.0, "vapour"),
+        (0.8776, 1.0, "vapour"),
     ),
 )
 def test_fig_2(notebook_variables, x, expected_y, phase):
@@ -40,57 +37,62 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
 
     The test selects the data point whose x-value is closest to ``x`` and
     checks that the corresponding y-value matches ``expected_y``.
-    The (x, expected_y) pairs are arbitrary and chosen for coverage.
+    The (x, expected_y) pairs are approximated from Fig 2 in paper.
     """
 
     # arrange
-    plot_y = notebook_variables["S_eq"][phase]
-    plot_x = notebook_variables["molecular_R_liq"]
+    plot_x = notebook_variables["plots"][phase]["x"]
+    plot_y = notebook_variables["plots"][phase]["y"]
     plot_x_eps = (plot_x[1] - plot_x[0]) / 2
-
-    idx = np.where(abs(plot_x - x) < plot_x_eps)
+    plot_y_eps = np.max(abs(np.diff(plot_y))) / 2
 
     # act
-    sut = plot_y[idx]
+    idx = np.where(abs(plot_x - x) < plot_x_eps)
+    sut = max(0, plot_y[idx])
 
     # assert
-    np.testing.assert_allclose(actual=sut, desired=expected_y, atol=0.01)
+    np.testing.assert_allclose(
+        actual=sut,
+        desired=expected_y,
+        rtol=plot_y_eps,
+    )
 
 
 @pytest.mark.parametrize(
-    "phase, eps_percent",
+    "phase, condition, rtol, eps",
     (
-        pytest.param("liquid", 1.0, marks=pytest.mark.xfail(strict=True)),
-        ("liquid", 1.1),
-        ("liquid", 1.2),
-        pytest.param("vapour", 0.05, marks=pytest.mark.xfail(strict=True)),
-        ("vapour", 0.09),
-        ("vapour", 0.1),
+        ("vapour", 0.0, 0.1, 1e-3),
+        ("liquid", 1.0, 0.1, 1e-2),
     ),
 )
-def test_isotope_ratio_change_sign(notebook_variables, phase, eps_percent):
-    """Verify sign of the isotopic ratio change against theoretical functions.
-    Values smaller than eps_percent are omitted."""
+def test_dR_zero_condition(notebook_variables, phase, condition, rtol, eps):
+    """Test values plotted with color in Fig 1.
+    Points (x, y) for which z equals condition should match theoretical lines."""
     # arrange
-    cmn = notebook_variables["COMMONS"]
-    rh = notebook_variables["RH"]
-    s_eq = notebook_variables["S_eq"][phase]
-    x_axis_size1 = notebook_variables["x"]
-    x_axis_size2 = notebook_variables["molecular_R_liq"]
+    cmn = notebook_variables["CMN_FOR_TEST"]
+    iso_ratio_v = notebook_variables["ISO_RATIO_V"]
 
-    eq_line_x_idx = np.abs(x_axis_size1[:, None] - x_axis_size2[None, :]).argmin(axis=0)
-    s_eq_iso = s_eq[eq_line_x_idx]
+    Y = notebook_variables["YY"]
+    X = notebook_variables["XX"]
 
-    above_eq_line = (rh[:, None] > s_eq_iso[None, :]) & (
-        x_axis_size2[None, :] > cmn.ratios.iso_ratio_liq_eq
+    pcm_data = notebook_variables["cases"][phase]["pcolormesh"].get_array()
+    within = (
+        (condition - eps < pcm_data)
+        & (pcm_data < condition + eps)
+        & (X > notebook_variables["X_eq"])
     )
+    assert np.sum(within) > 0
 
     # act
-    rel_diff = notebook_variables[f"rel_diff_{phase[:3]}"][::-1, :]
-    expected_sign = np.where(above_eq_line, -1.0, 1.0)
-    if phase == "vapour":
-        expected_sign *= -1
-    sut = expected_sign * rel_diff * PER_CENT
+    iso_ratio_r = X[within] * cmn.params.vsmow
+    expected_y = cmn.f.isotope_ratio_evolution.saturation_for_zero_dR_condition(
+        iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
+        diff_rat_light_to_heavy=1 / cmn.params.D_ratio_heavy_to_light,
+        b=cmn.params.b,
+        alpha_w=cmn.params.alpha_w,
+        iso_ratio_r=iso_ratio_r,
+        iso_ratio_v=iso_ratio_v,
+    )
 
     # assert
-    np.testing.assert_array_less(-sut[~np.isnan(sut)], eps_percent)
+    np.testing.assert_allclose(Y[within], expected_y, rtol=rtol)
